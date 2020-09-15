@@ -1,3 +1,6 @@
+require 'lucian_kaminari/model/page_scope_methods'
+require 'lucian_kaminari/model/page_active_relation_methods'
+
 module LucianKaminari
   module PageModel
     extend ActiveSupport::Concern
@@ -10,9 +13,8 @@ module LucianKaminari
           def self.#{LucianKaminari.config.page_method_name}(num = nil)
             per_page = LucianKaminari.config.default_per_page
             limit(per_page).offset(per_page * ((num = num.to_i - 1) < 0 ? 0 : num)).extending do
-                def per(num)
-                   limit(num).offset(offset_value/limit_value * num)
-                end
+                include LucianKaminari::PageScopeMethods
+                include LucianKaminari::PageActiveRelationMethods
             end
           end
           RUBY
